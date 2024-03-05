@@ -72,3 +72,60 @@ st.write('Полиномиальная регрессия со степенью 
 st.write('R^2:' ,pipeline.score(x_test, y_test))
 
 st.write('Лучшим результатом оказался алгоритм со степенью 2')
+
+
+st.title("Получить предсказание дождя.")
+
+st.header("Lenght")
+Lenght = st.number_input("Число:", value=1.4)
+
+st.header("Diameter")
+Diameter = st.number_input("Число:", value=1.1)
+
+st.header("Height")
+Height = st.number_input("Число:", value=0.4)
+
+st.header("Weight")
+Weight = st.number_input("Число:", value=24.6)
+
+st.header("Shucked Weight")
+Shucked = st.number_input("Число:", value=12.3)
+
+st.header("Viscera Weight")
+Viscera = st.number_input("Число:", value=5.5)
+
+st.header("Shell Weight")
+Shell = st.number_input("Число:", value=6.7)
+
+st.header("Sex")
+Sex_select = ['F', 'M', 'I']
+Sex = st.selectbox("Пол", Sex_select)
+
+
+df = pd.DataFrame({
+                    "Sex": [Sex],
+                    'Length': [Lenght],
+                    'Diameter': [Diameter],
+                    'Height': [Height],
+                    'Weight': [Weight],
+                    'Shucked Weight': [Shucked],
+                    'Viscera Weight': [Viscera],
+                    'Shell Weight': [Shell],
+                    'Age': [0],
+                    })
+
+
+data_category = bn.transform(df.select_dtypes(include=['object'])).astype(int)
+data_num = df.select_dtypes(exclude=['object'])
+df = pd.concat([data_num, pd.DataFrame(data_category)], axis=1)
+pd.set_option('display.max_columns', None)
+
+x_reg=df.drop(['Age'],axis=1)
+y_reg=df['Age']
+
+button_clicked = st.button("Предсказать")
+
+if button_clicked:
+    y_pred= pipeline.predict(x_reg)
+    st.write(f"{y_pred[0]}")
+

@@ -57,8 +57,121 @@ y_pred= clf.predict(X_test)
 st.write('NearestCentroid c метрикой cityblock:')
 st.write("Accuracy score" ,accuracy_score(y_test, y_pred))
 
+st.title("Получить предсказание дождя.")
+
+st.header("Date")
+Date = st.number_input("Число:", value=2012, min_value=1900, max_value=2100)
+
+st.header("Location")
+locations = ['Cobar', 'CoffsHarbour', 'Moree', 'NorfolkIsland', 'Sydney',
+       'SydneyAirport', 'WaggaWagga', 'Williamtown', 'Canberra', 'Sale',
+       'MelbourneAirport', 'Melbourne', 'Mildura', 'Portland', 'Watsonia',
+       'Brisbane', 'Cairns', 'Townsville', 'MountGambier', 'Nuriootpa',
+       'Woomera', 'PerthAirport', 'Perth', 'Hobart', 'AliceSprings',
+       'Darwin']
+Location = st.selectbox("Город", locations)
+
+st.header("MinTemp")
+MinTemp = st.number_input("Число:", value=20.9)
+
+st.header("MaxTemp")
+MaxTemp = st.number_input("Число:", value=37.8)
+
+st.header("Rainfall")
+Rainfall = st.number_input("Число:", value=2)
+
+st.header("Evaporation")
+Evaporation = st.number_input("Число:", value=12.8)
+
+st.header("Sunshine")
+Sunshine = st.number_input("Число:", value=13.2)
+
+st.header("WindGustDir")
+dirs=['SSW', 'S', 'NNE', 'WNW', 'N', 'SE', 'ENE', 'NE', 'E', 'SW', 'W',
+       'WSW', 'NNW', 'ESE', 'SSE', 'NW']
+WindGustDir = st.selectbox("Направление", dirs)
+
+st.header("WindGustSpeed")
+WindGustSpeed = st.number_input("Число:", value=30)
+
+st.header("WindDir9am")
+dirs2=['ENE', 'SSE', 'NNE', 'WNW', 'NW', 'N', 'S', 'SE', 'NE', 'W', 'SSW',
+       'E', 'NNW', 'ESE', 'WSW', 'SW']
+WindDir9am = st.selectbox("Направление", dirs2)
+
+st.header("WindDir3pm")
+dirs3=['SW', 'SSE', 'NNW', 'WSW', 'WNW', 'S', 'ENE', 'N', 'SE', 'NNE',
+       'NW', 'E', 'ESE', 'NE', 'SSW', 'W']
+WindDir3pm = st.selectbox("Направление", dirs3)
+
+st.header("WindSpeed9am")
+WindSpeed9am = st.number_input("Число:", value=11)
+
+st.header("WindSpeed3pm")
+WindSpeed3pm = st.number_input("Число:", value=7)
+
+st.header("Humidity9am")
+Humidity9am = st.number_input("Число:", value=27)
+
+st.header("Humidity3pm")
+Humidity3pm = st.number_input("Число:", value=9)
+
+st.header("Pressure9am")
+Pressure9am = st.number_input("Число:", value=1012.6)
+
+st.header("Pressure3pm")
+Pressure3pm = st.number_input("Число:", value=1010.1)
+
+st.header("Cloud9am")
+Cloud9am = st.number_input("Число:", value=0.1)
+
+st.header("Cloud3pm")
+Cloud3pm = st.number_input("Число:", value=1)
+
+st.header("Temp9am")
+Temp9am = st.number_input("Число:", value=29.8)
+
+st.header("Temp3pm")
+Temp3pm = st.number_input("Число:", value=36.4)
+
+st.header("RainToday")
+RainToday = st.number_input("Число:", value=0, min_value=0, max_value=1)
+
+data = pd.DataFrame({'Date': [Date],
+                    'Location': [Location],
+                    'MinTemp': [MinTemp],
+                    'MaxTemp': [MaxTemp],
+                    'Rainfall': [Rainfall],
+                    'Evaporation': [Evaporation],
+                    'Sunshine': [Sunshine],
+                    'WindGustDir': [WindGustDir],
+                    'WindGustSpeed': [WindGustSpeed],
+                    'WindDir9am': [WindDir9am],
+                    'WindDir3pm': [WindDir3pm],
+                    'WindSpeed9am': [WindSpeed9am],
+                    'WindSpeed3pm': [WindSpeed3pm],
+                    'Humidity9am': [Humidity9am],    
+                    'Humidity3pm': [Humidity3pm],   
+                    'Pressure9am': [Pressure9am],   
+                    'Pressure3pm': [Pressure3pm],   
+                    'Cloud9am': [Cloud9am],   
+                    'Cloud3pm': [Cloud3pm],   
+                    'Temp9am': [Temp9am],   
+                    'Temp3pm': [Temp3pm],   
+                    'RainToday': [RainToday],  
+                    'RainTomorrow': [0]       
+                    })
 
 
+data_category = bn.transform(data.select_dtypes(include=['object'])).astype(int)
+data_num = data.select_dtypes(exclude=['object'])
+data = pd.concat([data_num, pd.DataFrame(data_category)], axis=1)
+pd.set_option('display.max_columns', None)
 
+x_class=data.drop(['RainTomorrow'],axis=1)
 
+button_clicked = st.button("Предсказать")
 
+if button_clicked:
+    y_pred= clf.predict(x_class)
+    st.write(f"{y_pred[0]}")
